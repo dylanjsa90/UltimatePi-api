@@ -1,0 +1,14 @@
+# Dependency directories
+node_modules
+
+# Local Database
+db
+
+# Build directory
+build
+
+# Logs
+*.log
+npm-debug.log*
+
+.npm
