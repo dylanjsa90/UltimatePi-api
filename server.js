@@ -4,7 +4,7 @@ const app = require('express')();
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const cors = require('cors');
-const errorHandler = require('./lib/errorHandler');
+const errorHandler = require('./lib/error-handler');
 const Promise = require('./lib/promise');
 mongoose.Promise = Promise;
 
@@ -35,4 +35,4 @@ app.use((err, req, res, next) => {
   next();
 });
 
-module.exports = exports = server;
+module.exports = exports = server.listen(PORT, () => console.log('server up'));
