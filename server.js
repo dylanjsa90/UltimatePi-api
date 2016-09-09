@@ -4,7 +4,7 @@ const app = require('express')();
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const cors = require('cors');
-const errorHandler = require('./lib/errorHandler');
+const errorHandler = require('./lib/error-handler');
 const Promise = require('./lib/promise');
 mongoose.Promise = Promise;
 

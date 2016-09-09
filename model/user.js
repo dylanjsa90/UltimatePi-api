@@ -11,12 +11,16 @@ let userSchema = mongoose.Schema({
   role: {type: String, default: 'adult'}
 });
 
+userSchema.methods.generateToken = function() {
+  return jwt.sign({idd: this.username}, process.env.APP_SECRET);
+};
+
 userSchema.methods.generateHash = function(password) {
   return new Promise((resolve, reject) => {
     bcrypt.hash(password, 8, (err, data) => {
       if (err) return reject(err);
       this.password = data;
-      // need jwt here
+      resolve({token: this.generateToken()});
     });
   });
 };
@@ -26,7 +30,7 @@ userSchema.methods.comparePassword = function(password) {
     bcrypt.compare(password, this.password, (err, data) => {
       if (err) return reject(err);
       if (!data) return reject(new Error('Invalid username or password'));
-      // jwt resolve() here
+      // resolve() 
     });
   });
 };
