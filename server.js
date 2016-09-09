@@ -35,4 +35,4 @@ app.use((err, req, res, next) => {
   next();
 });
 
-module.exports = exports = server;
+module.exports = exports = server.listen(PORT, () => console.log('server up'));

@@ -30,7 +30,7 @@ userSchema.methods.comparePassword = function(password) {
     bcrypt.compare(password, this.password, (err, data) => {
       if (err) return reject(err);
       if (!data) return reject(new Error('Invalid username or password'));
-      // resolve() 
+      resolve({token: jwt.sign({idd: this.username}, password)}); 
     });
   });
 };
