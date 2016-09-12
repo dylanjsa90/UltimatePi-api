@@ -30,14 +30,10 @@ app.get('/api/update', (req, res, next) => {
   next();
 });
 
-// app.use('/api', authRouter);
+app.use('/api', authRouter);
 app.use('/api', userRouter);
 app.use('/api', remoteRouter);
 
-// app.use((err, req, res, next) => {
-//   res.status(err.statusCode || 500).send(err.message || 'Server Error');
-//   next();
-// });
 app.all('*', function(req, res, next) {
   next(createError(404, `Error: ${req.method} :: ${req.url} is not a route`));
 });
