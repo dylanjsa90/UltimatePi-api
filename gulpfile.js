@@ -1,23 +1,29 @@
 'use strict';
-const gulp = require('gulp');
-const mocha = require('gulp-mocha');
-const eslint = require('gulp-eslint');
 
-let appFiles = ['./server.js', './lib/*.js', './model/*.js', './routes/*.js'];
-let testFiles = ['./test/*.js'];
+const gulp    = require('gulp');
+const mocha   = require('gulp-mocha');
+const eslint  = require('gulp-eslint');
+const nodemon = require('gulp-nodemon');
 
-gulp.task('lint:all', () => {
-  gulp.src(appFiles)
-    .pipe(eslint())
-    .pipe(eslint.format());
-  gulp.src(testFiles)
-    .pipe(eslint())
-    .pipe(eslint.format());
+const paths = ['*.js', './lib/*.js', './controller/**/*.js', './routes/*.js', './model/*.js', './test/*.js'];
+
+gulp.task('lint', function(){
+  gulp.src(paths)
+  .pipe(eslint())
+  .pipe(eslint.format())
+  .pipe(eslint.failAfterError());
 });
 
-gulp.task('mocha', () => {
-  gulp.src(testFiles)
-    .pipe(mocha());
+gulp.task('test', function(){
+  return gulp.src('./test/*-test.js', {read: false})
+  .pipe(mocha());
 });
 
-gulp.task('default', ['lint:all', 'mocha']);
+gulp.task('nodemon', function(){
+  nodemon({
+    ext: 'js',
+    script: 'server.js'
+  });
+});
+
+gulp.task('default', ['test', 'lint']);
