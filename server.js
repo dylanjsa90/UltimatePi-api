@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const errorHandler = require('./lib/error-handler');
 const Promise = require('./lib/promise');
+const createError = require('http-errors');
 mongoose.Promise = Promise;
 
 // Universial Pi Code
@@ -16,10 +17,11 @@ const PORT = process.env.PORT || 3000;
 const dbPort = process.env.MONGODB_URI || 'mongodb://localhost/dev_db';
 mongoose.connect(dbPort);
 
+const remoteRouter = require('./routes/remote-router');
 const userRouter = require('./routes/user-router');
+const authRouter = require('./routes/auth-router');
 
 app.use(morgan('dev'));
-app.use(errorHandler());
 app.use(cors());
 
 app.get('/api/update', (req, res, next) => {
@@ -28,11 +30,17 @@ app.get('/api/update', (req, res, next) => {
   next();
 });
 
-app.use('/api/user', userRouter);
+// app.use('/api', authRouter);
+app.use('/api', userRouter);
+app.use('/api', remoteRouter);
 
-app.use((err, req, res, next) => {
-  res.status(err.statusCode || 500).send(err.message || 'Server Error');
-  next();
+// app.use((err, req, res, next) => {
+//   res.status(err.statusCode || 500).send(err.message || 'Server Error');
+//   next();
+// });
+app.all('*', function(req, res, next) {
+  next(createError(404, `Error: ${req.method} :: ${req.url} is not a route`));
 });
-
-module.exports = exports = server.listen(PORT, () => console.log('server up'));
+app.use(errorHandler);
+app.listen(PORT, () => console.log('server up on 3000'));
+// module.exports = exports = server.listen(PORT + 1, () => console.log('server up'));
