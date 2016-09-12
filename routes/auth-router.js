@@ -29,12 +29,10 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
     if (user.length!==0) {
       if(user[0].username){
         console.log('Username already exists, username: ' + newUser.username);
-        return next(createError(310, 'FUCM MEMEMME'));
+        return next(createError(310, 'Username or Password exists, pick another one'));
       }
     }
   });
-
-
 
   newUser.generateHash(req.body.password)
     .then((tokenData) => {
@@ -42,7 +40,9 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
         .then(() => {
           console.log(tokenData);
           res.json(tokenData);
-        }, createError(400, 'Bad Request'));
+        }, (err) => {
+          next(createError(400, 'Bad Request'));
+        });
     }, createError(500, 'Server Error'));
 });
 
