@@ -1,6 +1,6 @@
 'use strict';
 
-const socket = require('socket.io-client')(process.env.API_URL || 'http:localhost:3000');
+const socket = require('socket.io-client')(process.env.API_URL || 'http://localhost:3000');
 const exec = require('child_process').exec;
 const lirc = require('lirc_node');
 lirc.init();

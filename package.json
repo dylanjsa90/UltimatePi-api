@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha",
+    "test": "./node_modules/mocha/bin/mocha ",
     "start": "node server.js",
-    "lint": "./node_modules/eslint/bin/eslint.js"
+    "lint": "./node_modules/eslint/bin/eslint.js ./"
   },
   "repository": {
     "type": "git",
