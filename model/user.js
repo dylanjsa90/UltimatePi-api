@@ -21,6 +21,7 @@ userSchema.methods.generateToken = function() {
 userSchema.methods.generateHash = function(password) {
   return new Promise((resolve, reject) => {
     bcrypt.hash(password, 8, (err, data) => {
+      debugger;
       if (err) return reject(err);
       this.password = data;
       resolve({token: this.generateToken()});
@@ -33,7 +34,7 @@ userSchema.methods.comparePassword = function(password) {
     bcrypt.compare(password, this.password, (err, data) => {
       if (err) return reject(err);
       if (!data) return reject(new Error('Invalid username or password'));
-      resolve({token: this.generateToken()}); 
+      resolve({token: this.generateToken()});
     });
   });
 };
@@ -42,13 +43,13 @@ userSchema.methods.comparePassword = function(password) {
 userSchema.methods.addRemote = function(data) {
   let result;
   return new Promise((resolve, reject) => {
-    if (!data.name || !data.content || !data.userId) return reject(createError(400, 'Required info missing'));
+    if (!data.name || !data.controls || !data.userId) return reject(createError(400, 'Required info missing'));
     (new Remote(data)).save().then(remote => {
       result = remote;
       this.remotes.push(remote._id);
       this.save();
       resolve(result);
-    }, createError(404, 'bad something'))
+    }, createError(404, 'bad something'));
     // .then(() => resolve(result))
     // .catch(reject);
   });
