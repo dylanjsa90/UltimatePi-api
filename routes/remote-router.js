@@ -19,18 +19,7 @@ let findUser = function(req, res, next) {
 let remoteRouter = module.exports = exports = Router();
 
 remoteRouter.post('/remote', jsonParser, findUser, (req, res, next) => {
-  debugger;
-  // let inputData = req.body;
-  console.log(req.user);
-  req.user.addRemote(req.body).then(res.json.bind(res), createError(404, 'asa'));
-  // User.findById(inputData.userId).then(user => {
-  //   user.addRemote(req.body).then(remote => {
-  //     res.json(remote);
-  //     next();
-
-  //   }).catch(err => next());
-  // }).catch(err => next(createError(err.statusCode, 'invalid user to add remote to')));
-  // req.user.addRemote(req.body).then(res.json.bind(res), createError(400, 'Bad Request'));
+  req.user.addRemote(req.body).then(res.json.bind(res), createError(404, 'User not found'));
 });
 
 remoteRouter.get('/remote/:id', (req, res, next) => {

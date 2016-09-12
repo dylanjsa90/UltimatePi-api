@@ -21,7 +21,6 @@ userSchema.methods.generateToken = function() {
 userSchema.methods.generateHash = function(password) {
   return new Promise((resolve, reject) => {
     bcrypt.hash(password, 8, (err, data) => {
-      debugger;
       if (err) return reject(err);
       this.password = data;
       resolve({token: this.generateToken()});
@@ -49,9 +48,7 @@ userSchema.methods.addRemote = function(data) {
       this.remotes.push(remote._id);
       this.save();
       resolve(result);
-    }, createError(404, 'bad something'));
-    // .then(() => resolve(result))
-    // .catch(reject);
+    }, createError(404, 'Not found'));
   });
 };
 
