@@ -13,20 +13,50 @@ let authRouter = module.exports = exports = Router();
 
 authRouter.post('/signup', jsonParser, (req, res, next) => {
   let newUser = new User();
-  newUser.generateHash(req.body.password).then((tokenData) => {
-    newUser.save().then(() => {
+  newUser.username = req.body.username;
+  newUser.password = req.body.password;
+  console.log(newUser);
 
-      res.json(tokenData);
-    }, next(createError(400, 'Bad Request')));
-  }, next(createError(500, 'Server Error')));
+  User.find({ 'username': newUser.username}, function(err, user) {
+
+    if (err) {
+
+      console.log('Signup error');
+      return err;
+    }
+
+  //if user found.
+    if (user.length!==0) {
+      if(user[0].username){
+        console.log('Username already exists, username: ' + newUser.username);
+        return next(createError(310, 'FUCM MEMEMME'));
+      }
+    }
+  });
+
+
+
+  newUser.generateHash(req.body.password)
+    .then((tokenData) => {
+      newUser.save()
+        .then(() => {
+          console.log(tokenData);
+          res.json(tokenData);
+        }, createError(400, 'Bad Request'));
+    }, createError(500, 'Server Error'));
 });
 
+
 authRouter.get('/signin', BasicHttp, (req, res, next) => {
+  console.log('signin route');
   User.findOne({'username': req.auth.username})
     .then((user) => {
-      if (!user) return next(createError(401, 'Bad authentication'));
-      user.comparePassword(req.auth.password).then(res.json.bind(res), next(createError(401, 'Invalid Login Info')));
-    });
+      console.log('signin user: ' + user);
+      if (!user || user === null || user === undefined)
+        return next(createError(401, 'Bad authentication.'));
+      user.comparePassword(req.auth.password)
+        .then(res.json.bind(res), createError(401, 'Invalid login info.'));
+    }, createError(401, 'Invalid login info.'));
 });
 
 // Authorization/role edit route, currently not in our mvp I believe

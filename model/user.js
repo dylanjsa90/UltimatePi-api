@@ -8,7 +8,7 @@ const createError = require('http-errors');
 const Remote = require('./remote');
 
 let userSchema = mongoose.Schema({
-  username: {type: String, unique: true, required: true},
+  username: {type: String, unique: true, required: [true, 'no username']},
   password: {type: String, required: true},
   remotes: [{type: mongoose.Schema.Types.ObjectId,  ref: 'Remote', unique: true}],
   role: {type: String, default: 'basic'}
@@ -31,8 +31,9 @@ userSchema.methods.generateHash = function(password) {
 userSchema.methods.comparePassword = function(password) {
   return new Promise((resolve, reject) => {
     bcrypt.compare(password, this.password, (err, data) => {
-      if (err) return reject(err);
+      if (err) return reject(createError(401, 'Bad login info.'));
       if (!data) return reject(new Error('Invalid username or password'));
+      console.log(data);
       resolve({token: this.generateToken()});
     });
   });
