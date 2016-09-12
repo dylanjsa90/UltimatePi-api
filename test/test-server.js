@@ -1,7 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const serverError = require ('debug')('ultPie:test_error');
+const serverError = require ('debug')('ultPie_api:test_error');
 mongoose.connect('mongodb://localhost/routes_tests');
 let app = require('express')();
 const authRoute = require('../routes/auth-router');

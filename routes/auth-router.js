@@ -15,9 +15,10 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
   let newUser = new User();
   newUser.generateHash(req.body.password).then((tokenData) => {
     newUser.save().then(() => {
+
       res.json(tokenData);
     }, next(createError(400, 'Bad Request')));
-  }, next(createError(500, 'Server Error')));  
+  }, next(createError(500, 'Server Error')));
 });
 
 authRouter.get('/signin', BasicHttp, (req, res, next) => {
@@ -37,4 +38,3 @@ authRouter.put('/editrole/:userid', jsonParser, jwtAuth, authorization(), (req, 
 authRouter.get('/users', jsonParser, jwtAuth, authorization(), (req, res, next) => {
   User.find().then(res.json.bind(res), createError(500, 'Server Error'));
 });
-
