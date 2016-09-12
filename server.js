@@ -34,11 +34,11 @@ app.use('/api', authRouter);
 app.use('/api', userRouter);
 app.use('/api', remoteRouter);
 
-app.use(errorHandler);
 
 app.all('*', function(req, res, next) {
   next(createError(404, `Error: ${req.method} :: ${req.url} is not a route`));
 });
+app.use(errorHandler);
 
 app.listen(PORT, () => console.log('server up on 3000'));
 // module.exports = exports = server.listen(PORT, () => console.log('server up'));

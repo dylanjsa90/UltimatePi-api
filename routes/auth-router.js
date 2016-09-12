@@ -13,19 +13,29 @@ let authRouter = module.exports = exports = Router();
 
 authRouter.post('/signup', jsonParser, (req, res, next) => {
   let newUser = new User();
-  newUser.generateHash(req.body.password).then((tokenData) => {
-    newUser.save().then(() => {
-      res.json(tokenData);
-    }, next(createError(400, 'Bad Request')));
-  }, next(createError(500, 'Server Error')));  
+  newUser.username = req.body.username;
+  newUser.password = req.body.password;
+  console.log(newUser);
+  newUser.generateHash(req.body.password)
+    .then((tokenData) => {
+      newUser.save()
+        .then(() => {
+          console.log(tokenData);
+          res.json(tokenData);
+        }, createError(400, 'Bad Request'));
+    }, createError(500, 'Server Error'));
 });
 
 authRouter.get('/signin', BasicHttp, (req, res, next) => {
+  console.log('signin route');
   User.findOne({'username': req.auth.username})
     .then((user) => {
-      if (!user) return next(createError(401, 'Bad authentication'));
-      user.comparePassword(req.auth.password).then(res.json.bind(res), next(createError(401, 'Invalid Login Info')));
-    });
+      console.log('signin user: ' + user);
+      if (!user || user === null || user === undefined)
+        return next(createError(401, 'Bad authentication.'));
+      user.comparePassword(req.auth.password)
+        .then(res.json.bind(res), createError(401, 'Invalid login info.'));
+    }, createError(401, 'Invalid login info.'));
 });
 
 // Authorization/role edit route, currently not in our mvp I believe
@@ -37,4 +47,3 @@ authRouter.put('/editrole/:userid', jsonParser, jwtAuth, authorization(), (req, 
 authRouter.get('/users', jsonParser, jwtAuth, authorization(), (req, res, next) => {
   User.find().then(res.json.bind(res), createError(500, 'Server Error'));
 });
-

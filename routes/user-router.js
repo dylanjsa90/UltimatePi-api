@@ -28,7 +28,7 @@ userRouter.get('/user/:id', (req, res, next) => {
 });
 
 userRouter.put('/user/:id', jsonParser, (req, res, next) => {
-  User.findByIdAndUpdate(req.params.id, req.body, {new: true}).then(user => res.send(user)).catch(next)
+  User.findByIdAndUpdate(req.params.id, req.body, {new: true}).then(user => res.send(user)).catch(next);
 });
 
 userRouter.delete('/user/:id', jsonParser, (req, res, next) => {
