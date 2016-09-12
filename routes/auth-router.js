@@ -16,15 +16,36 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
   newUser.username = req.body.username;
   newUser.password = req.body.password;
   console.log(newUser);
+
+  User.find({ 'username': newUser.username}, function(err, user) {
+
+    if (err) {
+
+      console.log('Signup error');
+      return err;
+    }
+
+  //if user found.
+    if (user.length!==0) {
+      if(user[0].username){
+        console.log('Username already exists, username: ' + newUser.username);
+        return next(createError(310, 'Username or Password exists, pick another one'));
+      }
+    }
+  });
+
   newUser.generateHash(req.body.password)
     .then((tokenData) => {
       newUser.save()
         .then(() => {
           console.log(tokenData);
           res.json(tokenData);
-        }, createError(400, 'Bad Request'));
+        }, (err) => {
+          next(createError(400, 'Bad Request'));
+        });
     }, createError(500, 'Server Error'));
 });
+
 
 authRouter.get('/signin', BasicHttp, (req, res, next) => {
   console.log('signin route');

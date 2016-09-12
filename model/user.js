@@ -8,7 +8,7 @@ const createError = require('http-errors');
 const Remote = require('./remote');
 
 let userSchema = mongoose.Schema({
-  username: {type: String, unique: true, required: true},
+  username: {type: String, unique: true, required: [true, 'no username']},
   password: {type: String, required: true},
   remotes: [{type: mongoose.Schema.Types.ObjectId,  ref: 'Remote', unique: true}],
   role: {type: String, default: 'basic'}
