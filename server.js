@@ -32,6 +32,14 @@ app.get('/api/update', (req, res, next) => {
   next();
 });
 
+app.use('/api/remote/:button', (req, res, next)=>{
+  if(!req.params.button) return next(createError(400, 'Invalid Button'));
+
+  io.emit('get', [req.params.button]);
+  next();
+  return res.status(200).send('sent ' + req.params.button + ' to remote.');
+});
+
 app.use('/api', authRouter);
 app.use('/api', userRouter);
 app.use('/api', remoteRouter);
