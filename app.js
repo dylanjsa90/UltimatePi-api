@@ -1,15 +1,18 @@
 'use strict';
 
-const socket = require('socket.io-client')(process.env.API_URL || 'http://localhost:3000');
+const createError = require('http-errors');
+
+const socket = require('socket.io-client')('https://ultimate-pi-backend.herokuapp.com/');
 const exec = require('child_process').exec;
 const lirc = require('lirc_node');
 lirc.init();
 
-
+console.log('app.js up and running');
 // data [0] remote data[1] button
 socket.on('post', (data) => {
   console.log('post: ' + data);
   exec('irsend SEND_ONCE ' + data[0] + ' ' + data[1], (err, stdout, stderr) => {
+    if (err) return createError(err);
     console.log('stdout: ', stdout);
     console.log('stderr: ', stderr);
   });
