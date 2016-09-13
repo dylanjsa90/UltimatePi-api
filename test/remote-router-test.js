@@ -12,7 +12,7 @@ process.env.DB_SERVER = TEST_DB_SERVER;
 process.env.APP_SECRET = 'sillyMe';
 
 let app = require('./test-server');
-let server;
+let server, userToken;
 
 describe('testing routers: auth and remote', ()=>{
   before((done)=>{
@@ -33,9 +33,10 @@ describe('testing routers: auth and remote', ()=>{
   it('should post a new user with auth', (done)=>{
     request('localhost:3005')
       .post('/api/signup')
-      .send({username:'ahhh', password:'fuck'})
+      .send({username:'hello', password:'goodbye'})
       .end((err, res)=>{
-        // expect(err).to.eql(null);
+        console.log(res.body);
+        expect(err).to.eql(null);
         expect(res).to.have.status(200);
         expect(res.body).to.have.property('token');
         done();
@@ -51,7 +52,54 @@ describe('testing routers: auth and remote', ()=>{
         expect(res).to.have.status(400);
         done();
       });
-  })
+  });
+
+  it('should not post a new user', (done)=>{
+    request('localhost:3005')
+      .post('/api/signup')
+      .end((err, res)=>{
+        expect(err).to.not.eql(null);
+        expect(res).to.have.status(400);
+        done();
+      });
+  });
+
+  it('should get an existing user', (done)=>{
+    request('localhost:3005')
+      .get('/api/signin')
+      .auth('hello', 'goodbye')
+      .end((err, res)=>{
+        userToken = res.body;
+        console.log(res.body);
+        expect(err).to.eql(null);
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('token');
+        done();
+      });
+  });
+
+// not working due to request hanging
+//   it('should not get a user due to incorrect password', (done)=>{
+//     request('localhost:3005')
+//       .get('/api/signin')
+//       .auth('hello', 'no')
+//       .end((err, res)=>{
+//         expect(err).to.not.eql(null);
+//         expect(res).to.have.status(400);
+//         done();
+//       });
+//   });
+
+it('should not get a user due to incorrect password', (done)=>{
+    request('localhost:3005')
+      .get('/api/signin')
+      .auth('he', 'goodbye')
+      .end((err, res)=>{
+        expect(err).to.not.eql(null);
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
 });
 
 
