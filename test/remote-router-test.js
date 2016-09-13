@@ -12,7 +12,7 @@ process.env.DB_SERVER = TEST_DB_SERVER;
 process.env.APP_SECRET = 'sillyMe';
 
 let app = require('./test-server');
-let server, userToken;
+let server;
 
 describe('testing routers: auth and remote', ()=>{
   before((done)=>{
@@ -69,7 +69,6 @@ describe('testing routers: auth and remote', ()=>{
       .get('/api/signin')
       .auth('hello', 'goodbye')
       .end((err, res)=>{
-        userToken = res.body;
         console.log(res.body);
         expect(err).to.eql(null);
         expect(res).to.have.status(200);
@@ -78,19 +77,18 @@ describe('testing routers: auth and remote', ()=>{
       });
   });
 
-// not working due to request hanging
-//   it('should not get a user due to incorrect password', (done)=>{
-//     request('localhost:3005')
-//       .get('/api/signin')
-//       .auth('hello', 'no')
-//       .end((err, res)=>{
-//         expect(err).to.not.eql(null);
-//         expect(res).to.have.status(400);
-//         done();
-//       });
-//   });
+  it('should not get a user due to incorrect password', (done)=>{
+    request('localhost:3005')
+      .get('/api/signin')
+      .auth('hello', 'no')
+      .end((err, res)=>{
+        expect(err).to.not.eql(null);
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
 
-it('should not get a user due to incorrect password', (done)=>{
+  it('should not get a user due to incorrect password', (done)=>{
     request('localhost:3005')
       .get('/api/signin')
       .auth('he', 'goodbye')
