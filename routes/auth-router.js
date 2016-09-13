@@ -12,27 +12,29 @@ const authorization = require('../lib/authorization');
 let authRouter = module.exports = exports = Router();
 
 authRouter.post('/signup', jsonParser, (req, res, next) => {
-  let newUser = new User();
-  newUser.username = req.body.username;
-  newUser.password = req.body.password;
-  console.log(newUser);
+  console.log(req.body.username);
+  if(!req.body.username || !req.body.password || req.body.username === undefined || req.body.password === undefined){
+    return next(createError(400, 'Password and Username are both needed'));
+  }
 
-  User.find({ 'username': newUser.username}, function(err, user) {
-
+  User.find({ 'username': req.body.username}, function(err, user) {
     if (err) {
-
       console.log('Signup error');
       return err;
     }
-
   //if user found.
     if (user.length!==0) {
       if(user[0].username){
         console.log('Username already exists, username: ' + newUser.username);
-        return next(createError(310, 'Username or Password exists, pick another one'));
+        return next(createError(310, 'FUCM MEMEMME'));
       }
     }
   });
+
+  let newUser = new User();
+  newUser.username = req.body.username;
+  newUser.password = req.body.password;
+  console.log(newUser);
 
   newUser.generateHash(req.body.password)
     .then((tokenData) => {

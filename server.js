@@ -8,6 +8,8 @@ const errorHandler = require('./lib/error-handler');
 const Promise = require('./lib/promise');
 const createError = require('http-errors');
 mongoose.Promise = Promise;
+const lirc = require('lirc_node');
+lirc.init();
 
 // Universial Pi Code
 const server = require('http').Server(app);
@@ -28,6 +30,14 @@ app.get('/api/update', (req, res, next) => {
   io.emit('update');
   res.status(200).send('Remotes updated to database');
   next();
+});
+
+app.use('/api/remote/:button', (req, res, next)=>{
+  if(!req.params.button) return next(createError(400, 'Invalid Button'));
+//change visio to remote name, will need to reoder once we config remote on front end
+  io.emit('post', ['VISIO'. req.params.button]);
+  next();
+  return res.status(200).send('sent ' + req.params.button + ' to remote.');
 });
 
 app.use('/api', authRouter);

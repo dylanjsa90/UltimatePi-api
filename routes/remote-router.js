@@ -1,8 +1,11 @@
 'use strict';
 
-const Router = require('express').Router;
+const app = require('express');
+const Router = app.Router;
 const createError = require('http-errors');
 const jsonParser = require('body-parser').json();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
 const Remote = require('../model/remote');
 const User = require('../model/user');
@@ -38,4 +41,24 @@ remoteRouter.delete('/remote/:id', jsonParser, (req, res, next) => {
   }).then(user => {
     return user.removeRemoteById(req.params.id);
   }).then(remote => res.json(remote)).catch(next);
+});
+
+remoteRouter.post('/remote/:name/:button', (req, res, next)=>{
+  if(!req.params.name){
+    return res.sendError(createError(400, 'Invalid Remote Name'));
+  }
+  if(!req.params.button){
+    return res.sendError(createError(400, 'Invalid Button Name'));
+  }
+  Remote.find({'name': req.params.name}, (err, found)=>{
+    if(!found || found === undefined){
+      return res.sendError(createError(400, 'Remote not found'));
+    }
+    if(!found.indexOf(req.params.button) || found.indexOf(req.params.button === null)){
+      return res.sendError(createError(400, 'Button Not Found'));
+    }
+    io.emit('post', [req.params.name, req.params.button]);
+    next();
+    return res.status(200).send('sent ' + req.params.button + ' to ' + req.params.name);
+  });
 });

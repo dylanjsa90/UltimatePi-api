@@ -9,11 +9,12 @@ const mongoose = require('mongoose');
 
 const TEST_DB_SERVER = 'mongodb://localhost/test_db';
 process.env.DB_SERVER = TEST_DB_SERVER;
+process.env.APP_SECRET = 'sillyMe';
 
 let app = require('./test-server');
 let server;
 
-describe('testing routers', ()=>{
+describe('testing routers: auth and remote', ()=>{
   before((done)=>{
     server = app.listen(3005, ()=>{
       console.log('server up on 3005');
@@ -29,17 +30,28 @@ describe('testing routers', ()=>{
     });
   });
 
-  it('should post a new user', (done)=>{
+  it('should post a new user with auth', (done)=>{
     request('localhost:3005')
-      .post('/api/singup')
-      .send({username:'tradddd', password:'wordz'})
+      .post('/api/signup')
+      .send({username:'ahhh', password:'fuck'})
       .end((err, res)=>{
         // expect(err).to.eql(null);
-        // expect(res).to.have.status(200);
-        // expect(res.body).to.have.property('token');
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('token');
         done();
       });
   });
+
+  it('should not post a new user', (done)=>{
+    request('localhost:3005')
+      .post('/api/signup')
+      .send({username:'ahhh'})
+      .end((err, res)=>{
+        expect(err).to.not.eql(null);
+        expect(res).to.have.status(400);
+        done();
+      });
+  })
 });
 
 
