@@ -24,12 +24,11 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
       console.log('Signup error');
       return err;
     }
-
   //if user found.
     if (user.length!==0) {
       if(user[0].username){
         console.log('Username already exists, username: ' + newUser.username);
-        return next(createError(310, 'Username or Password exists, pick another one'));
+        return next(createError(310, 'FUCM MEMEMME'));
       }
     }
   });
