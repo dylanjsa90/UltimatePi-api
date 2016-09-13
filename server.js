@@ -8,6 +8,8 @@ const errorHandler = require('./lib/error-handler');
 const Promise = require('./lib/promise');
 const createError = require('http-errors');
 mongoose.Promise = Promise;
+const lirc = require('lirc_node');
+lirc.init();
 
 // Universial Pi Code
 const server = require('http').Server(app);

@@ -16,12 +16,8 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
   if(!req.body.username || !req.body.password || req.body.username === undefined || req.body.password === undefined){
     return next(createError(400, 'Password and Username are both needed'));
   }
-  let newUser = new User();
-  newUser.username = req.body.username;
-  newUser.password = req.body.password;
-  console.log(newUser);
 
-  User.find({ 'username': newUser.username}, function(err, user) {
+  User.find({ 'username': req.body.username}, function(err, user) {
     if (err) {
       console.log('Signup error');
       return err;
@@ -34,6 +30,11 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
       }
     }
   });
+
+  let newUser = new User();
+  newUser.username = req.body.username;
+  newUser.password = req.body.password;
+  console.log(newUser);
 
   newUser.generateHash(req.body.password)
     .then((tokenData) => {
