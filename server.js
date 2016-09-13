@@ -34,8 +34,8 @@ app.get('/api/update', (req, res, next) => {
 
 app.use('/api/remote/:button', (req, res, next)=>{
   if(!req.params.button) return next(createError(400, 'Invalid Button'));
-
-  io.emit('get', [req.params.button]);
+//change visio to remote name, will need to reoder once we config remote on front end
+  io.emit('get', ['VISIO'. req.params.button]);
   next();
   return res.status(200).send('sent ' + req.params.button + ' to remote.');
 });
