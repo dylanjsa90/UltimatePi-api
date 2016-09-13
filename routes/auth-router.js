@@ -12,15 +12,17 @@ const authorization = require('../lib/authorization');
 let authRouter = module.exports = exports = Router();
 
 authRouter.post('/signup', jsonParser, (req, res, next) => {
+  console.log(req.body.username);
+  if(!req.body.username || !req.body.password || req.body.username === undefined || req.body.password === undefined){
+    return next(createError(400, 'Password and Username are both needed'));
+  }
   let newUser = new User();
   newUser.username = req.body.username;
   newUser.password = req.body.password;
   console.log(newUser);
 
   User.find({ 'username': newUser.username}, function(err, user) {
-
     if (err) {
-
       console.log('Signup error');
       return err;
     }

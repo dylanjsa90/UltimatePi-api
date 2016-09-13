@@ -35,14 +35,23 @@ describe('testing routers: auth and remote', ()=>{
       .post('/api/signup')
       .send({username:'ahhh', password:'fuck'})
       .end((err, res)=>{
-        expect(err).to.eql(null);
+        // expect(err).to.eql(null);
         expect(res).to.have.status(200);
         expect(res.body).to.have.property('token');
         done();
       });
   });
 
-  it('')
+  it('should not post a new user', (done)=>{
+    request('localhost:3005')
+      .post('/api/signup')
+      .send({username:'ahhh'})
+      .end((err, res)=>{
+        expect(err).to.not.eql(null);
+        expect(res).to.have.status(400);
+        done();
+      });
+  })
 });
 
 
