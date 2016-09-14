@@ -32,14 +32,13 @@ app.get('/api/update', (req, res, next) => {
 
 app.use('/api/remote/:button', (req, res, next)=>{
   if(!req.params.button) return next(createError(400, 'Invalid Button'));
-  io.emit('post', req.params.button);
-  return res.status(200).send('sent ' + req.params.button + ' to remote.');
+  io.emit('post', [req.params.button]);
+  res.status(200).send('sent ' + req.params.button + ' to remote.');
 });
 
 app.use('/api', authRouter);
 app.use('/api', userRouter);
 app.use('/api', remoteRouter);
-
 
 app.all('*', function(req, res, next) {
   next(createError(404, `Error: ${req.method} :: ${req.url} is not a route`));
