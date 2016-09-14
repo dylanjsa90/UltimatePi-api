@@ -14,7 +14,8 @@ socket.on('error', (error) => {
 console.log('app.js up and running');
 socket.on('post', (data) => {
   console.log('post: ' + data);
-  exec('irsend SEND_ONCE VIZIO KEY_' + data[0], (err, stdout, stderr) => {
+  // exec('irsend SEND_ONCE VIZIO KEY_' + data[0], (err, stdout, stderr) => {
+  exec('echo fart', (err, stdout, stderr) => {
     if (err) return createError(err);
     console.log('stdout: ', stdout);
     console.log('stderr: ', stderr);
