@@ -11,10 +11,8 @@ mongoose.Promise = Promise;
 const lirc = require('lirc_node');
 lirc.init();
 
-// Universial Pi Code
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
-// end -except get /update
 const PORT = process.env.PORT || 3000;
 const dbPort = process.env.MONGODB_URI || 'mongodb://localhost/deploy';
 mongoose.connect(dbPort);
@@ -34,8 +32,7 @@ app.get('/api/update', (req, res, next) => {
 
 app.use('/api/remote/:button', (req, res, next)=>{
   if(!req.params.button) return next(createError(400, 'Invalid Button'));
-//change visio to remote name, will need to reoder once we config remote on front end
-  io.emit('post', ['VISIO'. req.params.button]);
+  io.emit('post', req.params.button);
   next();
   return res.status(200).send('sent ' + req.params.button + ' to remote.');
 });
@@ -51,4 +48,3 @@ app.all('*', function(req, res, next) {
 app.use(errorHandler);
 
 app.listen(PORT, () => console.log('server up on 3000'));
-// module.exports = exports = server.listen(PORT, () => console.log('server up'));
