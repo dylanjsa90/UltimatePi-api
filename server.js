@@ -45,6 +45,7 @@ app.use('/api', userRouter);
 app.all('*', function(req, res, next) {
   next(createError(404, `Error: ${req.method} :: ${req.url} is not a route`));
 });
+
 app.use(errorHandler);
 
 server.listen(PORT, () => console.log('server up on 3000'));
