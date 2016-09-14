@@ -7,6 +7,10 @@ const exec = require('child_process').exec;
 const lirc = require('lirc_node');
 lirc.init();
 
+socket.on('error', (error) => {
+  console.log('socket error: ' + error);
+});
+
 console.log('app.js up and running');
 socket.on('post', (data) => {
   console.log('post: ' + data);

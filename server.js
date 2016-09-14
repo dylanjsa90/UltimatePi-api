@@ -29,7 +29,10 @@ app.get('/api/update', (req, res, next) => {
 });
 
 app.use('/api/remote/:button', (req, res, next) => {
-  if(!req.params.button) return next(createError(400, 'Invalid Button'));
+  if (!req.params.button) {
+    io.emit('error', 'error');
+    return next(createError(400, 'Invalid Button'));
+  }
   io.emit('post', [req.params.button]);
   res.status(200).send('sent ' + req.params.button + ' to remote.');
   next();
