@@ -2,7 +2,7 @@
 
 const createError = require('http-errors');
 
-const socket = require('socket.io-client')('https://ultimate-pi-backend.herokuapp.com/');
+const socket = require('socket.io-client')('https://ultimate-pi-backend.herokuapp.com');
 const exec = require('child_process').exec;
 const lirc = require('lirc_node');
 lirc.init();
