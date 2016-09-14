@@ -8,10 +8,9 @@ const lirc = require('lirc_node');
 lirc.init();
 
 console.log('app.js up and running');
-// data [0] remote data[1] button
 socket.on('post', (data) => {
   console.log('post: ' + data);
-  exec('irsend SEND_ONCE ' + data[0] + ' ' + data[1], (err, stdout, stderr) => {
+  exec('irsend SEND_ONCE VIZIO ' + data, (err, stdout, stderr) => {
     if (err) return createError(err);
     console.log('stdout: ', stdout);
     console.log('stderr: ', stderr);
