@@ -32,7 +32,7 @@ userSchema.methods.comparePassword = function(password) {
   return new Promise((resolve, reject) => {
     bcrypt.compare(password, this.password, (err, data) => {
       if (err) return reject(createError(401, 'Bad login info.'));
-      if (!data) return reject(new Error('Invalid username or password'));
+      if (!data) return reject(createError(401, 'Invalid username or password'));
       console.log(data);
       resolve({token: this.generateToken()});
     });

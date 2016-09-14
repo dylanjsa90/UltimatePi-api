@@ -57,7 +57,7 @@ authRouter.get('/signin', BasicHttp, (req, res, next) => {
       if (!user || user === null || user === undefined)
         return next(createError(401, 'Bad authentication.'));
       user.comparePassword(req.auth.password)
-        .then(res.json.bind(res), createError(401, 'Invalid login info.'));
+        .then(res.json.bind(res), next(createError(401, 'Invalid login info.')));
     }, createError(401, 'Invalid login info.'));
 });
 
