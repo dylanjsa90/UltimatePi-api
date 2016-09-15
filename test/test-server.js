@@ -1,16 +1,29 @@
 'use strict';
 
 const mongoose = require('mongoose');
+mongoose.promise = Promise;
 const serverError = require ('debug')('ultPie_api:test_error');
 mongoose.connect('mongodb://localhost/routes_tests');
+const createError = require('http-errors');
 let app = require('express')();
-const authRoute = require('../routes/auth-router.js');
-const remoteRoute = require('../routes/remote-router.js');
-// const userRoute = require('../routes/user-router');
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+const lirc = require('lirc_node');
+lirc.init();
 
-// app.use('/api/', userRoute);
-app.use('/api', remoteRoute);
+const authRoute = require('../routes/auth-router.js');
+
 app.use('/api', authRoute);
+
+app.use('/api/remote/:button', (req, res, next) => {
+  if (!req.params.button) {
+    io.emit('error', 'error');
+    return next(createError(400, 'Invalid Button'));
+  }
+  io.emit('post', [req.params.button]);
+  res.status(200).send('sent ' + req.params.button + ' to remote.');
+  next();
+});
 
 app.use((err, req, res, next) =>{
   serverError(err);
