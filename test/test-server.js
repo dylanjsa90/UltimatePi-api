@@ -1,6 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const Promise = require('../lib/promise');
 mongoose.promise = Promise;
 const serverError = require ('debug')('ultPie_api:test_error');
 mongoose.connect('mongodb://localhost/routes_tests');
