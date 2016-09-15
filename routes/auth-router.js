@@ -3,7 +3,6 @@
 const Router = require('express').Router;
 const jsonParser = require('body-parser').json();
 const createError = require('http-errors');
-// const ErrorHandler = require('../lib/error-handler');
 const User = require('../model/user');
 const BasicHttp = require('../lib/basic-http');
 const jwtAuth = require('../lib/jwt-auth');
@@ -13,21 +12,18 @@ let authRouter = module.exports = exports = Router();
 
 authRouter.post('/signup', jsonParser, (req, res, next) => {
   console.log(req.body.username);
-  if(!req.body.username || !req.body.password || req.body.username === undefined || req.body.password === undefined){
-    return next(createError(400, 'Password and Username are both needed'));
+  if(!req.body.username || !req.body.password || req.body.username === undefined || req.body.password === undefined) {
+    return next(createError(400, 'Both a username and password are required.'));
   }
 
-  User.find({ 'username': req.body.username}, function(err, user) {
+  User.find({ 'username': req.body.username}, (err, user) => {
     if (err) {
-      console.log('Signup error');
-      return err;
+      console.log('Signup error.');
+      return next(createError(500, 'Internal server error.'));
     }
-  //if user found.
-    if (user.length!==0) {
-      if(user[0].username){
-        console.log('Username already exists, username: ' + newUser.username);
-        return next(createError(310, 'FUCM MEMEMME'));
-      }
+    if (user.length !== 0 && user[0].username) {
+      console.log('Username already exists, username: ' + newUser.username);
+      return next(createError(400, 'The requested username already exists.'));
     }
   });
 
@@ -38,14 +34,14 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
 
   newUser.generateHash(req.body.password)
     .then((tokenData) => {
-      newUser.save()
-        .then(() => {
-          console.log(tokenData);
-          res.json(tokenData);
-        }, (err) => {
-          createError(400, 'Bad Request');
-        });
-    }, createError(500, 'Server Error'));
+      newUser.save((err, user) => {
+        if (err) next(createError(400, 'Bad request.'));
+        if (user) res.json(tokenData);
+      });
+    }).catch((err) => {
+      console.log('error generating hash: ' + err);
+      next(createError(401, 'Bad authentication.'));
+    });
 });
 
 

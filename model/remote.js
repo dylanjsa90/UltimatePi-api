@@ -8,5 +8,4 @@ let remoteSchema = Schema({
   controls: {type: String, required: true}
 });
 
-
 module.exports = exports = mongoose.model('Remote', remoteSchema);

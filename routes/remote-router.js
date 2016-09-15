@@ -1,11 +1,8 @@
 'use strict';
 
-const app = require('express');
-const Router = app.Router;
+const Router = require('express').Router;
 const createError = require('http-errors');
 const jsonParser = require('body-parser').json();
-const server = require('http').Server(app);
-const io = require('socket.io')(server);
 
 const Remote = require('../model/remote');
 const User = require('../model/user');
@@ -22,7 +19,18 @@ let findUser = function(req, res, next) {
 let remoteRouter = module.exports = exports = Router();
 
 remoteRouter.post('/remote', jsonParser, findUser, (req, res, next) => {
-  req.user.addRemote(req.body).then(res.json.bind(res), createError(404, 'User not found'));
+  debugger;
+  // let inputData = req.body;
+  console.log(req.user);
+  req.user.addRemote(req.body).then(res.json.bind(res), createError(404, 'asa'));
+  // User.findById(inputData.userId).then(user => {
+  //   user.addRemote(req.body).then(remote => {
+  //     res.json(remote);
+  //     next();
+
+  //   }).catch(err => next());
+  // }).catch(err => next(createError(err.statusCode, 'invalid user to add remote to')));
+  // req.user.addRemote(req.body).then(res.json.bind(res), createError(400, 'Bad Request'));
 });
 
 remoteRouter.get('/remote/:id', (req, res, next) => {
@@ -41,24 +49,4 @@ remoteRouter.delete('/remote/:id', jsonParser, (req, res, next) => {
   }).then(user => {
     return user.removeRemoteById(req.params.id);
   }).then(remote => res.json(remote)).catch(next);
-});
-
-remoteRouter.post('/remote/:name/:button', (req, res, next)=>{
-  if(!req.params.name){
-    return res.sendError(createError(400, 'Invalid Remote Name'));
-  }
-  if(!req.params.button){
-    return res.sendError(createError(400, 'Invalid Button Name'));
-  }
-  Remote.find({'name': req.params.name}, (err, found)=>{
-    if(!found || found === undefined){
-      return res.sendError(createError(400, 'Remote not found'));
-    }
-    if(!found.indexOf(req.params.button) || found.indexOf(req.params.button === null)){
-      return res.sendError(createError(400, 'Button Not Found'));
-    }
-    io.emit('post', [req.params.name, req.params.button]);
-    next();
-    return res.status(200).send('sent ' + req.params.button + ' to ' + req.params.name);
-  });
 });

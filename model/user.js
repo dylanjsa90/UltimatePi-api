@@ -32,10 +32,9 @@ userSchema.methods.comparePassword = function(password) {
   return new Promise((resolve, reject) => {
     bcrypt.compare(password, this.password, (err, data) => {
       console.log('entered compare password');
-      // if (err || data === false) return reject(createError(401, 'Bad login info.'));
-      if (err || data === false){
-        console.log('I entered this wrong password error');
-        return reject(createError(401, 'Invalid username or password'));
+      if (err || data === false) {
+        console.log('Error in password comparison.');
+        return reject(createError(401, 'Invalid username or password.'));
       }
       resolve({token: this.generateToken()});
     });
@@ -47,25 +46,25 @@ userSchema.methods.addRemote = function(data) {
   let result;
   return new Promise((resolve, reject) => {
     if (!data.name || !data.controls || !data.userId) return reject(createError(400, 'Required info missing'));
-    (new Remote(data)).save().then(remote => {
+    (new Remote(data)).save().then((remote) => {
       result = remote;
       this.remotes.push(remote._id);
       this.save();
       resolve(result);
-    }, createError(404, 'Not found'));
+    }, createError(404, 'Remote not found.'));
   });
 };
 
 userSchema.methods.removeRemote = function(remoteId) {
   return new Promise((resolve, reject) => {
-    this.remotes.filter(value => {
+    this.remotes.filter((value) => {
       if (value === remoteId) return false;
       return true;
     });
     this.save().then(() => {
       return Remote.findByIdAndRemove(remoteId);
     })
-    .then(remote => resolve(remote)).catch(reject);
+    .then((remote) => resolve(remote)).catch(reject);
   });
 };
 
