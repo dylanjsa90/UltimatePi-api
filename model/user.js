@@ -33,7 +33,7 @@ userSchema.methods.comparePassword = function(password) {
     bcrypt.compare(password, this.password, (err, data) => {
       console.log('entered compare password');
       // if (err || data === false) return reject(createError(401, 'Bad login info.'));
-      if (data === false){
+      if (err || data === false){
         console.log('I entered this wrong password error');
         return reject(createError(401, 'Invalid username or password'));
       }
