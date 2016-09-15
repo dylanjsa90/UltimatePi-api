@@ -70,7 +70,7 @@ describe('testing routers: auth and remote', ()=>{
       .auth('hello', 'goodbye')
       .end((err, res)=>{
         console.log(res.body);
-        // expect(err).to.eql(null);
+        expect(err).to.eql(null);
         expect(res).to.have.status(200);
         expect(res.body).to.have.property('token');
         done();
@@ -82,6 +82,7 @@ describe('testing routers: auth and remote', ()=>{
       .get('/api/signin')
       .auth('hello', 'no')
       .end((err, res)=>{
+        console.log('res: ' + res.data);
         expect(err).to.not.eql(null);
         expect(res).to.have.status(401);
         done();

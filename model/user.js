@@ -31,11 +31,12 @@ userSchema.methods.generateHash = function(password) {
 userSchema.methods.comparePassword = function(password) {
   return new Promise((resolve, reject) => {
     bcrypt.compare(password, this.password, (err, data) => {
-      if (err || data === false) return reject(createError(401, 'Bad login info.'));
-      // if (data === false){
-      //   console.log('I entered this wrong password error');
-      //   return reject(createError(401, 'Invalid username or password'));
-      // }
+      console.log('entered compare password');
+      // if (err || data === false) return reject(createError(401, 'Bad login info.'));
+      if (err || data === false){
+        console.log('I entered this wrong password error');
+        return reject(createError(401, 'Invalid username or password'));
+      }
       resolve({token: this.generateToken()});
     });
   });

@@ -43,7 +43,7 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
           console.log(tokenData);
           res.json(tokenData);
         }, (err) => {
-          (createError(400, 'Bad Request'));
+          createError(400, 'Bad Request');
         });
     }, createError(500, 'Server Error'));
 });
@@ -51,16 +51,17 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
 
 authRouter.get('/signin', BasicHttp, (req, res, next) => {
   console.log('signin route');
-  User.findOne({'username': req.auth.username})
-    .then((user) => {
-      console.log('signin user: ' + user);
-      if (!user)
-        return next(createError(401, 'Bad authentication.'));
-      user.comparePassword(req.auth.password)
-        .then(res.json.bind(res))
-        .catch(createError(401, 'Invalid login info.'));
-    }, createError(401, 'Invalid login info.'));
+  User.findOne({'username': req.auth.username}, (err, user) => {
+    console.log('signin user: ' + user);
+    if (!user || err) return next(createError(401, 'Bad authentication.'));
+    user.comparePassword(req.auth.password)
+      .then(res.json.bind(res))
+      .catch((err) => {
+        next(err);
+      });
+  });
 });
+
 
 // Authorization/role edit route, currently not in our mvp I believe
 authRouter.put('/editrole/:userid', jsonParser, jwtAuth, authorization(), (req, res, next) => {
