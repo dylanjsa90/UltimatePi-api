@@ -6,9 +6,7 @@ mongoose.connect('mongodb://localhost/routes_tests');
 let app = require('express')();
 const authRoute = require('../routes/auth-router.js');
 const remoteRoute = require('../routes/remote-router.js');
-// const userRoute = require('../routes/user-router');
 
-// app.use('/api/', userRoute);
 app.use('/api', remoteRoute);
 app.use('/api', authRoute);
 

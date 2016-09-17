@@ -1,5 +1,6 @@
 {
   "rules": {
+    "no-unused-vars": [2, {"vars": "all", "args": "none"}],
     "no-console": 0,
     "indent": [
       2,
