@@ -15,7 +15,6 @@ const PORT = process.env.PORT || 3000;
 const dbPort = process.env.MONGODB_URI || 'mongodb://localhost/deploy';
 mongoose.connect(dbPort);
 
-// const remoteRouter = require('./routes/remote-router');
 const userRouter = require('./routes/user-router');
 const authRouter = require('./routes/auth-router');
 
@@ -40,7 +39,6 @@ app.use('/api/remote/:button', (req, res, next) => {
 
 app.use('/api', authRouter);
 app.use('/api', userRouter);
-// app.use('/api', remoteRouter);
 
 app.all('*', function(req, res, next) {
   next(createError(404, `Error: ${req.method} :: ${req.url} is not a route`));
