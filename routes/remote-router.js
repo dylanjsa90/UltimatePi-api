@@ -4,6 +4,10 @@ const app = require('express');
 const Router = app.Router;
 const createError = require('http-errors');
 const jsonParser = require('body-parser').json();
+//this seems like a lot of work that you've already done server.js
+//you might consider creating a file that module.exports an object
+//containing io, server and app, would make this much easier to maintain
+//going forward
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
@@ -54,6 +58,7 @@ remoteRouter.post('/remote/:name/:button', (req, res, next)=>{
     if(!found || found === undefined){
       return res.sendError(createError(400, 'Remote not found'));
     }
+    //these seems like checks you could do on the model file
     if(!found.indexOf(req.params.button) || found.indexOf(req.params.button === null)){
       return res.sendError(createError(400, 'Button Not Found'));
     }

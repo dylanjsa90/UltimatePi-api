@@ -10,6 +10,9 @@ const Remote = require('../model/remote');
 let userRouter = module.exports = exports = new Router();
 
 userRouter.post('/user', jsonParser, (req, res, next) => {
+  //it seems like you're doubling down with the username requirement
+  //I see both here and in your model file, I would pick one to do error
+  //handling, will make the codebase easier to maintain.
   if (!req.body.username) return next(createError(400, 'ERROR: username is required'));
   new User(req.body).save().then(user => {
     res.json(user);
@@ -37,4 +40,8 @@ userRouter.delete('/user/:id', jsonParser, (req, res, next) => {
     result = user;
     return Remote.remove({userId: user._id});
   }).then(() => res.json(result)).catch(next);
+  //are you actually doing anything with the result on the client side?
+  //if not I would maybe send something else back that way there's no need
+  //for a variable outside the promise scope. You should in general try to
+  //avoid that but for uses this simple it's fine.
 });
