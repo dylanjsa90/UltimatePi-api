@@ -30,6 +30,10 @@ describe('testing routers: auth and remote', ()=>{
     });
   });
 
+  //you should probably move these user tests to a different file
+  //little misleading to have them in the remote-router test
+  //when/if this project got bigger these would be difficult
+  //to find
   it('should post a new user with auth', (done)=>{
     request('localhost:3005')
       .post('/api/signup')

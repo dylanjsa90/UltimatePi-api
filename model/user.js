@@ -32,6 +32,7 @@ userSchema.methods.comparePassword = function(password) {
   return new Promise((resolve, reject) => {
     bcrypt.compare(password, this.password, (err, data) => {
       console.log('entered compare password');
+      //get rid of this
       // if (err || data === false) return reject(createError(401, 'Bad login info.'));
       if (err || data === false){
         console.log('I entered this wrong password error');
